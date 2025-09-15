@@ -2,9 +2,9 @@ import { fetchCryptoPrices } from "../../api";
 import React, { useEffect, useState } from "react";
 
 export default function Home(){
-    const [prices, setPrices] = useState([]); // Initialize as empty array
-    const [loading, setLoading] = useState(true); // Add loading state
-    const [error, setError] = useState(null); // Add error state
+    const [prices, setPrices] = useState([]);
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null); 
 
     useEffect(() => {
         async function getPrices() {
@@ -12,7 +12,7 @@ export default function Home(){
                 setLoading(true);
                 const data = await fetchCryptoPrices();
                 console.log(data);
-                setPrices(data || []); // Ensure data is an array
+                setPrices(data || []);
                 setError(null);
             } catch (err) {
                 console.error('Error fetching crypto prices:', err);
