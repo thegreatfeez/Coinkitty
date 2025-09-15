@@ -6,3 +6,16 @@ const response = await fetch(
 const data = await response.json();
 return data;
 }
+
+export async function searchToken(query) {
+    if(!query) return null;
+
+    try{
+        const res = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
+        const data = await res.json();
+        return data.coins;
+    } catch (error) {
+        console.error("Error searching token:", error);
+        return [];
+    }
+}
