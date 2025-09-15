@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Link, NavLink} from 'react-router-dom';
 import logo from '../assets/images/Vector.png';
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoMdSearch } from "react-icons/io";
+import SearchToken from './SearchToken';
 
 export default function Header() {
-    const [query, setQuery] = useState("")
+    const [query, setQuery] = useState("");
+    const [showSearch, setShowSearch] = useState(false);
     
     return (
         <header className="bg-slate-800 border-b border-slate-700">
@@ -55,11 +57,28 @@ export default function Header() {
                         />
                         <input 
                             type="text"
-                            placeholder="Search"
+                            placeholder="Search cryptocurrencies..."
                             value={query}
-                            onChange={(e) => setQuery(e.target.value)}
+                            onChange={(e) => {
+                                setQuery(e.target.value);
+                                setShowSearch(e.target.value.trim().length > 0);
+                            }}
+                            onFocus={() => setShowSearch(query.trim().length > 0)}
+                            onBlur={() => {
+                                setTimeout(() => setShowSearch(false), 200);
+                            }}
                             className="bg-slate-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-slate-600 transition-all"
                         />
+                        
+                        {showSearch && (
+                            <SearchToken 
+                                query={query} 
+                                onTokenClick={() => {
+                                    setQuery("");
+                                    setShowSearch(false);
+                                }}
+                            />
+                        )}
                     </div>
 
                    
