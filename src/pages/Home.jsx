@@ -1,10 +1,12 @@
 import { fetchCryptoPrices } from "../../api";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home(){
     const [prices, setPrices] = useState([]);
     const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null); 
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function getPrices() {
@@ -24,6 +26,10 @@ export default function Home(){
         }
         getPrices();
     }, []);
+
+    const handleTokenClick = (tokenId) => {
+        navigate(`/token/${tokenId}`);
+    };
 
     if (error) {
         return (
@@ -55,7 +61,11 @@ export default function Home(){
                     </div>
                     
                     {prices.map((coin, index) => (
-                        <div key={coin.id} className={`grid grid-cols-5 gap-6 px-6 py-4 items-center border-b border-slate-700 hover:bg-slate-750 ${index === prices.length - 1 ? 'border-b-0' : ''}`}>
+                        <div 
+                            key={coin.id} 
+                            onClick={() => handleTokenClick(coin.id)}
+                            className={`grid grid-cols-5 gap-6 px-6 py-4 items-center border-b border-slate-700 hover:bg-slate-700 cursor-pointer transition-colors duration-200 ${index === prices.length - 1 ? 'border-b-0' : ''}`}
+                        >
                             <div className="flex items-center gap-3">
                                 <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full" />
                                 <div>
