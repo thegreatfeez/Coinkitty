@@ -2,6 +2,7 @@ import React from "react";
 import { fetchCryptoPrices } from "../../api";
 import { useParams, useNavigate } from "react-router-dom";
 import AddToPortfolio from "../components/addToPortfolio";
+import { usePortfolio } from "../contexts/PortfolioContext";
 
 export default function TokenDetails() {
   const [tokenDetails, setTokenDetails] = React.useState(null);
@@ -12,6 +13,13 @@ export default function TokenDetails() {
   const { tokenId } = useParams();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
+  const {addToken} = usePortfolio()
+
+     const handleSaveToPortfolio = (portfolioData) => {
+        addToken(portfolioData);
+        console.log('Token added to portfolio!');
+        setIsOpen(false);
+    };
 
   React.useEffect(() => {
     async function tokenDetail() {
@@ -524,12 +532,7 @@ export default function TokenDetails() {
                 tokenId={tokenId}
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onSave={(portfolioData) => {
-                  // Handle saving portfolio data here
-                  console.log("Saving to portfolio:", portfolioData);
-                  // You might want to save to localStorage, send to API, etc.
-                  setIsOpen(false);
-                }}
+                onSave={handleSaveToPortfolio}
               />
             )}
           </div>
