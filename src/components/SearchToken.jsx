@@ -30,9 +30,7 @@ export default function SearchToken({ query, onTokenClick }) {
     }, [query]);
 
     const handleTokenClick = (tokenId) => {
-        // Navigate to token details page
         navigate(`/token/${tokenId}`);
-        // Call parent callback to close search
         if (onTokenClick) {
             onTokenClick();
         }

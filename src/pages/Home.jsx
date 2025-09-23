@@ -1,5 +1,5 @@
 import { fetchCryptoPrices } from "../../api";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Home(){
@@ -13,7 +13,6 @@ export default function Home(){
             try {
                 setLoading(true);
                 const data = await fetchCryptoPrices();
-                console.log(data);
                 setPrices(data || []);
                 setError(null);
             } catch (err) {
