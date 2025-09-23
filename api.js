@@ -19,3 +19,21 @@ export async function searchToken(query) {
         return [];
     }
 }
+
+export const fetchCryptoNews = async () => {
+    const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+    const response = await fetch(
+        `https://newsapi.org/v2/everything?q=cryptocurrency&sortBy=publishedAt&pageSize=50&apiKey=${API_KEY}`
+    );
+    const data = await response.json();
+    return data.articles;
+};
+
+export const fetchEducationalContent = async () => {
+    const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+    const response = await fetch(
+        `https://newsapi.org/v2/everything?q=blockchain+education+guide&sortBy=publishedAt&pageSize=20&apiKey=${API_KEY}`
+    );
+    const data = await response.json();
+    return data.articles || [];
+};
