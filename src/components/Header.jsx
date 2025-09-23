@@ -61,7 +61,7 @@ export default function Header() {
                             value={query}
                             onChange={(e) => {
                                 setQuery(e.target.value);
-                                setShowSearch(e.target.value.trim().length > 0);
+                                setShowSearch(e.target.value.trim().length >0);
                             }}
                             onFocus={() => setShowSearch(query.trim().length > 0)}
                             onBlur={() => {
