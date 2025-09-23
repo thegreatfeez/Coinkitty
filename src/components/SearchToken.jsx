@@ -29,8 +29,8 @@ export default function SearchToken({ query, onTokenClick }) {
         return () => clearTimeout(delayDebounce);
     }, [query]);
 
-    const handleTokenClick = (tokenId) => {
-        navigate(`/token/${tokenId}`);
+    const handleTokenClick = (coin) => {     
+        navigate(`/token/${coin.id}`);
         if (onTokenClick) {
             onTokenClick();
         }
@@ -59,7 +59,7 @@ export default function SearchToken({ query, onTokenClick }) {
                     {results.map((coin) => (
                         <li
                             key={coin.id}
-                            onClick={() => handleTokenClick(coin.id)}
+                            onMouseDown={() => handleTokenClick(coin)}
                             className="flex items-center gap-3 p-3 hover:bg-slate-700 cursor-pointer transition-colors duration-200"
                         >
                             <img 
