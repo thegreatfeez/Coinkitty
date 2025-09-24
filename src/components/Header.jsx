@@ -5,10 +5,20 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoMdSearch } from "react-icons/io";
 import SearchToken from "./SearchToken";
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Header() {
   const [query, setQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const { currentUser } = useAuth();
+
+  
+
+  function handleLogout() {
+    signOut(auth);
+  }
 
   return (
     <header className="bg-slate-800 border-b border-slate-700">
@@ -84,17 +94,41 @@ export default function Header() {
             <IoIosNotificationsOutline size={25} />
           </button>
 
-          <Link
-            to="/login"
-            className="relative group text-gray-300 hover:text-white transition-colors"
-          >
-            <FaRegUserCircle size={25} />
+          {currentUser ? (
+            <button
+              onClick={handleLogout}
+              className="relative group"
+            >
+              {currentUser.photoURL ? (
+                <img 
+                  src={currentUser.photoURL} 
+                  alt="Profile" 
+                  className="w-7 h-7 rounded-full border-2 border-gray-300 hover:border-white transition-colors"
+                />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold border-2 border-gray-300 hover:border-white transition-colors">
+                  {currentUser.email ? currentUser.email.charAt(0).toUpperCase() : 'U'}
+                </div>
+              )}
 
-            <div className="absolute right-0 top-full mt-2 px-3 py-1 bg-slate-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-slate-600">
-              Sign In
-              <div className="absolute bottom-full right-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-slate-900"></div>
-            </div>
-          </Link>
+              <div className="absolute right-0 top-full mt-2 px-3 py-1 bg-slate-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-slate-600">
+                Sign Out
+                <div className="absolute bottom-full right-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-slate-900"></div>
+              </div>
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="relative group text-gray-300 hover:text-white transition-colors"
+            >
+              <FaRegUserCircle size={25} />
+
+              <div className="absolute right-0 top-full mt-2 px-3 py-1 bg-slate-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-slate-600">
+                Sign In
+                <div className="absolute bottom-full right-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-slate-900"></div>
+              </div>
+            </Link>
+          )}
         </div>
       </nav>
     </header>

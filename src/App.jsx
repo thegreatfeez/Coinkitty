@@ -9,9 +9,12 @@ import { PortfolioProvider } from "./contexts/PortfolioContext";
 import Portfolio from "./pages/Portfolio"
 import Login from "./pages/Login";
 import AuthRequired from "./components/AuthRequired";
+import { AuthProvider } from './contexts/AuthContext'
+import Register from './components/Register'
 
 function App() {
   return (
+  <AuthProvider>
   <PortfolioProvider>
     <Router>
       <Header />
@@ -21,8 +24,7 @@ function App() {
         <Route element={<AuthRequired/>}>
            <Route path="portfolio" element={<Portfolio/>} />
         </Route>
-       
-
+       <Route path="/register" element={<Register />} />
         <Route path="insights" element={<Insight />} />
         <Route path="learn" element={<Learn />} />
         <Route path="token/:tokenId" element={<TokenDetails />} />
@@ -30,6 +32,7 @@ function App() {
       </Routes>
     </Router>
   </PortfolioProvider>
+  </AuthProvider>
   );
 }
 
