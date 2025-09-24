@@ -26,7 +26,7 @@ function App() {
         <Route path="insights" element={<Insight />} />
         <Route path="learn" element={<Learn />} />
         <Route path="token/:tokenId" element={<TokenDetails />} />
-        <Route path="Login" element={<Login/>} />
+        <Route path="login" element={<Login/>} />
       </Routes>
     </Router>
   </PortfolioProvider>

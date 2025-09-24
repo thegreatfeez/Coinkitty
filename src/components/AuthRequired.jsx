@@ -1,6 +1,14 @@
 import React from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet, Navigate } from "react-router-dom"
+
 
 export default function AuthRequired() {
-    return <Outlet/>
+    const isAuthenticated = false
+    if (!isAuthenticated) {
+        return(
+        <Navigate to="login" 
+        state={{message: '⚠️ You need to log in first before you can access your portfolio.'}} />
+        )
+    }
+    return <Outlet />
 }
