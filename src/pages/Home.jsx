@@ -30,12 +30,56 @@ export default function Home() {
     navigate(`/token/${tokenId}`);
   };
 
-  if (error) {
+if (error) {
     return (
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Cryptocurrency Prices</h1>
-        <div className="p-4 border rounded-lg bg-red-50 border-red-200">
-          <p className="text-red-600">{error}</p>
+      <div className="bg-slate-900 text-white min-h-screen flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center">
+          <div className="mb-8">
+            <div className="w-20 h-20 mx-auto mb-6 relative">
+              <div className="w-20 h-20 rounded-full border-4 border-red-500 flex items-center justify-center">
+                <svg className="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.732 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <div className="absolute inset-0 rounded-full border-4 border-red-500 opacity-25 animate-ping"></div>
+            </div>
+          </div>
+          
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Oops! Something went wrong
+          </h1>
+          
+          <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+            We encountered an issue while fetching your data. This could be due to a network problem or an issue with our servers. Please check your internet connection or try again later.
+          </p>
+          
+          <div className="space-y-4">
+            <button 
+              onClick={() => window.location.reload()}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Retry
+            </button>
+            
+            <button 
+              onClick={() => navigate(-1)}
+              className="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Go Back
+            </button>
+          </div>
+          
+          <div className="mt-8 pt-6 border-t border-slate-700">
+            <p className="text-slate-500 text-sm">
+              Error details: {error}
+            </p>
+          </div>
         </div>
       </div>
     );
