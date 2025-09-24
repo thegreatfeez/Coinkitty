@@ -1,7 +1,7 @@
 import React from "react";
 import { fetchCryptoPrices } from "../../api";
 import { useParams, useNavigate } from "react-router-dom";
-import AddToPortfolio from "../components/addToPortfolio";
+import AddToPortfolio from "../components/AddToPortfolio";
 import { usePortfolio } from "../contexts/PortfolioContext";
 
 export default function TokenDetails() {
