@@ -6,7 +6,11 @@ export default function Home() {
   const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  
+  const tokensPerPage = 50;
+  const totalPages = Math.ceil(prices.length / tokensPerPage);
 
   useEffect(() => {
     async function getPrices() {
@@ -29,6 +33,10 @@ export default function Home() {
   const handleTokenClick = (tokenId) => {
     navigate(`/token/${tokenId}`);
   };
+
+ 
+  const startIndex = (currentPage - 1) * tokensPerPage;
+  const currentTokens = prices.slice(startIndex, startIndex + tokensPerPage);
 
 if (error) {
     return (
@@ -97,7 +105,8 @@ if (error) {
         <div className="text-gray-300">No cryptocurrency data available.</div>
       ) : (
         <div className="bg-slate-800 rounded-lg overflow-hidden">
-          <div className="grid grid-cols-5 gap-6 px-6 py-4 bg-slate-700 text-sm font-medium text-gray-300 uppercase tracking-wider">
+          <div className="grid grid-cols-6 gap-6 px-6 py-4 bg-slate-700 text-sm font-medium text-gray-300 uppercase tracking-wider">
+            <div>#</div>
             <div>Name</div>
             <div>Price</div>
             <div>24h Change</div>
@@ -105,12 +114,16 @@ if (error) {
             <div>24h Volume</div>
           </div>
 
-          {prices.map((coin, index) => (
+          {currentTokens.map((coin, index) => (
             <div
               key={coin.id}
               onClick={() => handleTokenClick(coin.id)}
-              className={`grid grid-cols-5 gap-6 px-6 py-4 items-center border-b border-slate-700 hover:bg-slate-700 cursor-pointer transition-colors duration-200 ${index === prices.length - 1 ? "border-b-0" : ""}`}
+              className={`grid grid-cols-6 gap-6 px-6 py-4 items-center border-b border-slate-700 hover:bg-slate-700 cursor-pointer transition-colors duration-200 ${index === currentTokens.length - 1 ? "border-b-0" : ""}`}
             >
+              <div className="text-gray-400 font-medium">
+                {startIndex + index + 1}
+              </div>
+
               <div className="flex items-center gap-3">
                 <img
                   src={coin.image}
@@ -151,6 +164,26 @@ if (error) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {prices.length > 0 && (
+        <div className="flex justify-center mt-8">
+          <div className="flex space-x-2">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-4 py-2 rounded-lg font-semibold transition-colors duration-200 ${
+                  currentPage === page
+                    ? "bg-blue-500 text-white"
+                    : "bg-slate-700 text-gray-300 hover:bg-slate-600 hover:text-white"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
