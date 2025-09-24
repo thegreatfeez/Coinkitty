@@ -26,7 +26,6 @@ export default function TokenDetails() {
       try {
         setLoading(true);
         const tokenData = await fetchCryptoPrices();
-        console.log(tokenData);
         const token = tokenData.find((coin) => coin.id === tokenId);
         setTokenDetails(token || null);
         setError(false);
