@@ -4,9 +4,39 @@ import { useNavigate } from "react-router-dom";
 import { usePortfolio } from '../contexts/PortfolioContext';
 
 export default function Portfolio() {
-    const { portfolio, removeToken, getPortfolioStats } = usePortfolio();
+    const { portfolio, removeToken, getPortfolioStats, updateToken } = usePortfolio();
     const stats = getPortfolioStats();
     const navigate = useNavigate();
+    
+    const [editingToken, setEditingToken] = React.useState(null);
+    const [editFormData, setEditFormData] = React.useState({
+        quantity: '',
+        purchasePrice: ''
+    });
+
+    const handleEditToken = (item) => {
+        setEditingToken(item.id);
+        setEditFormData({
+            quantity: item.quantity.toString(),
+            purchasePrice: item.purchasePrice.toString()
+        });
+    };
+
+    const handleSaveEdit = () => {
+        const updates = {
+            quantity: parseFloat(editFormData.quantity),
+            purchasePrice: parseFloat(editFormData.purchasePrice)
+        };
+        
+        updateToken(editingToken, updates);
+        setEditingToken(null);
+        setEditFormData({ quantity: '', purchasePrice: '' });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingToken(null);
+        setEditFormData({ quantity: '', purchasePrice: '' });
+    };
 
     if (portfolio.length === 0) {
         return (
@@ -103,58 +133,114 @@ export default function Portfolio() {
                                 const percentageChange = investmentValue > 0 ? (gainLoss / investmentValue) * 100 : 0;
 
                                 return (
-                                    <div key={item.id} className="grid grid-cols-12 gap-4 p-4 border-b border-gray-700 last:border-b-0 hover:bg-gray-750 transition-colors">
-                                       
-                                        <div className="col-span-3 flex items-center gap-3">
-                                            <img 
-                                                src={item.tokenData?.image} 
-                                                alt={item.tokenData?.name}
-                                                className="w-10 h-10 rounded-full"
-                                            />
-                                            <div>
-                                                <p className="font-semibold">{item.tokenData?.name}</p>
-                                                <p className="text-gray-400 text-sm">{item.tokenData?.symbol?.toUpperCase()}</p>
+                                    <div key={item.id}>
+                                        <div className="grid grid-cols-12 gap-4 p-4 border-b border-gray-700 last:border-b-0 hover:bg-gray-750 transition-colors">
+                                           
+                                            <div className="col-span-3 flex items-center gap-3">
+                                                <img 
+                                                    src={item.tokenData?.image} 
+                                                    alt={item.tokenData?.name}
+                                                    className="w-10 h-10 rounded-full"
+                                                />
+                                                <div>
+                                                    <p className="font-semibold">{item.tokenData?.name}</p>
+                                                    <p className="text-gray-400 text-sm">{item.tokenData?.symbol?.toUpperCase()}</p>
+                                                </div>
+                                            </div>
+
+                                            
+                                            <div className="col-span-2 text-right">
+                                                <p className="font-semibold">${item.tokenData?.current_price?.toLocaleString() || '0.00'}</p>
+                                                <p className="text-gray-400 text-sm">vs ${item.purchasePrice}</p>
+                                            </div>
+
+                                            
+                                            <div className="col-span-2 text-right">
+                                                <p className="font-semibold">${currentValue.toLocaleString()}</p>
+                                                <p className="text-gray-400 text-sm">{item.quantity} {item.tokenData?.symbol?.toUpperCase()}</p>
+                                            </div>
+
+                                            
+                                            <div className="col-span-2 text-right">
+                                                <p className={`font-semibold ${gainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                                    ${gainLoss.toLocaleString()}
+                                                </p>
+                                                <p className={`text-sm ${percentageChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                                    {percentageChange >= 0 ? '+' : ''}{percentageChange.toFixed(2)}%
+                                                </p>
+                                            </div>
+
+                                            
+                                            <div className="col-span-3 text-right flex justify-end gap-2">
+                                                <button 
+                                                onClick={() => handleEditToken(item)}
+                                                className="p-2 hover:bg-gray-600 rounded-lg transition-colors">
+                                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    onClick={() => removeToken(item.id)}
+                                                    className="p-2 hover:bg-gray-600 rounded-lg transition-colors"
+                                                >
+                                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"></path>
+                                                    </svg>
+                                                </button>
                                             </div>
                                         </div>
-
                                         
-                                        <div className="col-span-2 text-right">
-                                            <p className="font-semibold">${item.tokenData?.current_price?.toLocaleString() || '0.00'}</p>
-                                            <p className="text-gray-400 text-sm">vs ${item.purchasePrice}</p>
-                                        </div>
-
-                                        
-                                        <div className="col-span-2 text-right">
-                                            <p className="font-semibold">${currentValue.toLocaleString()}</p>
-                                            <p className="text-gray-400 text-sm">{item.quantity} {item.tokenData?.symbol?.toUpperCase()}</p>
-                                        </div>
-
-                                        
-                                        <div className="col-span-2 text-right">
-                                            <p className={`font-semibold ${gainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                                ${gainLoss.toLocaleString()}
-                                            </p>
-                                            <p className={`text-sm ${percentageChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                                {percentageChange >= 0 ? '+' : ''}{percentageChange.toFixed(2)}%
-                                            </p>
-                                        </div>
-
-                                        
-                                        <div className="col-span-3 text-right flex justify-end gap-2">
-                                            <button className="p-2 hover:bg-gray-600 rounded-lg transition-colors">
-                                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                                </svg>
-                                            </button>
-                                            <button
-                                                onClick={() => removeToken(item.id)}
-                                                className="p-2 hover:bg-gray-600 rounded-lg transition-colors"
-                                            >
-                                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
+                                        {editingToken === item.id && (
+                                            <div className="col-span-12 bg-gray-700 p-4 rounded-lg">
+                                                <h3 className="text-lg font-semibold mb-4">Edit {item.tokenData?.name}</h3>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                            Quantity
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            value={editFormData.quantity}
+                                                            onChange={(e) => setEditFormData(prev => ({
+                                                                ...prev,
+                                                                quantity: e.target.value
+                                                            }))}
+                                                            className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                                                            step="any"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                            Purchase Price ($)
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            value={editFormData.purchasePrice}
+                                                            onChange={(e) => setEditFormData(prev => ({
+                                                                ...prev,
+                                                                purchasePrice: e.target.value
+                                                            }))}
+                                                            className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                                                            step="any"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2 mt-4">
+                                                    <button
+                                                        onClick={handleSaveEdit}
+                                                        className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium transition-colors"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                    <button
+                                                        onClick={handleCancelEdit}
+                                                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg font-medium transition-colors"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}

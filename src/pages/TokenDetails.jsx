@@ -17,7 +17,7 @@ export default function TokenDetails() {
 
      const handleSaveToPortfolio = (portfolioData) => {
         addToken(portfolioData);
-        console.log('Token added to portfolio!');
+        alert('Token added to portfolio!');
         setIsOpen(false);
     };
 

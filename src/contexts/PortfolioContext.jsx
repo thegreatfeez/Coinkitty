@@ -10,8 +10,8 @@ const PORTFOLIO_ACTIONS = {
     CLEAR_PORTFOLIO: 'CLEAR_PORTFOLIO'
 };
 
-function portfolioReducer(state,action){
-    switch(action.type){
+function portfolioReducer(state, action) {
+    switch (action.type) {
         case PORTFOLIO_ACTIONS.LOAD_PORTFOLIO:
             return action.payload;
             
@@ -34,7 +34,8 @@ function portfolioReducer(state,action){
                     lastUpdated: new Date().toISOString()
                 }];
             }
-            case PORTFOLIO_ACTIONS.UPDATE_TOKEN:
+            
+        case PORTFOLIO_ACTIONS.UPDATE_TOKEN:
             return state.map(item => 
                 item.id === action.payload.id 
                     ? { ...item, ...action.payload.updates, lastUpdated: new Date().toISOString() }
@@ -50,7 +51,6 @@ function portfolioReducer(state,action){
         default:
             return state;
     }
-
 }
 
 export const usePortfolio = () => {
@@ -61,33 +61,41 @@ export const usePortfolio = () => {
     return context;
 };
 
-
 export const PortfolioProvider = ({ children }) => {
     const [portfolio, dispatch] = React.useReducer(portfolioReducer, []);
+    const [isInitialized, setIsInitialized] = React.useState(false);
 
     
     React.useEffect(() => {
         try {
             const savedPortfolio = localStorage.getItem('cryptoPortfolio');
-            if (savedPortfolio) {
+            
+            if (savedPortfolio && savedPortfolio !== 'undefined' && savedPortfolio !== 'null') {
                 const parsedPortfolio = JSON.parse(savedPortfolio);
-                dispatch({ type: PORTFOLIO_ACTIONS.LOAD_PORTFOLIO, payload: parsedPortfolio });
+                
+                if (Array.isArray(parsedPortfolio) && parsedPortfolio.length > 0) {
+                    dispatch({ type: PORTFOLIO_ACTIONS.LOAD_PORTFOLIO, payload: parsedPortfolio });
+                }
             }
         } catch (error) {
             console.error('Error loading portfolio from localStorage:', error);
+        } finally {
+            setIsInitialized(true);
         }
     }, []);
 
-    
+   
     React.useEffect(() => {
+        if (!isInitialized) return;
+        
+        
         try {
             localStorage.setItem('cryptoPortfolio', JSON.stringify(portfolio));
         } catch (error) {
             console.error('Error saving portfolio to localStorage:', error);
         }
-    }, [portfolio]);
+    }, [portfolio, isInitialized]);
 
-  
     const addToken = (tokenData) => {
         dispatch({ type: PORTFOLIO_ACTIONS.ADD_TOKEN, payload: tokenData });
     };
@@ -104,7 +112,6 @@ export const PortfolioProvider = ({ children }) => {
         dispatch({ type: PORTFOLIO_ACTIONS.CLEAR_PORTFOLIO });
     };
 
-   
     const getPortfolioStats = () => {
         const totalValue = portfolio.reduce((sum, item) => {
             const currentValue = (item.tokenData?.current_price || 0) * item.quantity;
