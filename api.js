@@ -21,20 +21,25 @@ export async function searchToken(query) {
   }
 }
 
+
 export const fetchCryptoNews = async () => {
-  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-  const response = await fetch(
-    `https://newsapi.org/v2/everything?q=cryptocurrency&sortBy=publishedAt&pageSize=50&apiKey=${API_KEY}`,
-  );
-  const data = await response.json();
-  return data.articles;
+  try {
+    const response = await fetch('/.netlify/functions/crypto-news?type=crypto');
+    const data = await response.json();
+    return data.articles || [];
+  } catch (error) {
+    console.error('Error fetching crypto news:', error);
+    return [];
+  }
 };
 
 export const fetchEducationalContent = async () => {
-  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-  const response = await fetch(
-    `https://newsapi.org/v2/everything?q=blockchain+education+guide&sortBy=publishedAt&pageSize=20&apiKey=${API_KEY}`,
-  );
-  const data = await response.json();
-  return data.articles || [];
+  try {
+    const response = await fetch('/.netlify/functions/crypto-news?type=education');
+    const data = await response.json();
+    return data.articles || [];
+  } catch (error) {
+    console.error('Error fetching educational content:', error);
+    return [];
+  }
 };
